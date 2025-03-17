@@ -26,6 +26,7 @@ services:
     environment:
       - DEBUG=True
       - DB_HOST=db  
+      - DB_PASSWORD=0312 # 이 줄 추가
     depends_on:
       - db
 

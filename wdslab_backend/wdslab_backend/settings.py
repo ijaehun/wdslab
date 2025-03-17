@@ -94,7 +94,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'wds',
         'USER': 'postgres',
-        'PASSWORD': '0312',
+        'PASSWORD': os.environ.get('DB_PASSWORD', '0312'),  # 환경 변수 추가
         'HOST': os.environ.get('DB_HOST', 'localhost'),  # 환경 변수로 제어
         'PORT': '5432',
     }
