@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./wdslab_frontend
+      dockerfile: Dockerfile.prod  # 프로덕션용 Dockerfile
+    ports:
+      - "80:80"  # 외부 80포트로 서비스
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: always
+
+  backend:
+    build:
+      context: ./wdslab_backend
+      dockerfile: Dockerfile.prod  # 프로덕션용 Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - DB_HOST=db
+      - DB_PASSWORD=${DB_PASSWORD}  # 환경변수에서 가져오기
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    command: >
+      bash -c "
+        while !</dev/tcp/db/5432; do sleep 1; done
+        python manage.py migrate
+        gunicorn --bind 0.0.0.0:8000 your_app.wsgi:application
+      "
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=wds
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
