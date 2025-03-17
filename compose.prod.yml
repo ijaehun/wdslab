@@ -4,9 +4,9 @@ services:
   frontend:
     build:
       context: ./wdslab_frontend
-      dockerfile: Dockerfile  # 프로덕션용 Dockerfile
+      dockerfile: Dockerfile.prod  # 프로덕션용 Dockerfile
     ports:
-      - "80:80"  # 외부 80포트로 서비스
+      - "80:3000"  # 외부 80포트로 서비스
     environment:
       - NODE_ENV=production
     depends_on:
