@@ -28,7 +28,16 @@ services:
       - DB_HOST=db  
       - DB_PASSWORD=0312 # 이 줄 추가
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: >
+      bash -c "
+        echo 'Waiting for PostgreSQL to be ready...'
+        while !</dev/tcp/db/5432; do sleep 1; done
+        echo 'PostgreSQL is ready!'
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000
+      "
 
   db:
     image: postgres:14
@@ -40,6 +49,12 @@ services:
       - POSTGRES_PASSWORD=0312
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
