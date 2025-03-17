@@ -25,6 +25,7 @@ services:
       - ./wdslab_backend:/app
     environment:
       - DEBUG=True
+      - DB_HOST=db  
     depends_on:
       - db
 
@@ -33,9 +34,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=wdslab
+      - POSTGRES_DB=wds
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=0312
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
