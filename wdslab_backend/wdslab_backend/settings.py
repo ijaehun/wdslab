@@ -57,6 +57,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://frontend:3000",  # 도커 컴포즈에서의 서비스 이름
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 ROOT_URLCONF = "wdslab_backend.urls"
 
 TEMPLATES = [
